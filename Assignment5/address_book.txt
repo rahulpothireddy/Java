@@ -1,0 +1,9 @@
+Bill Gates	bill@microsoft.com	(111) 222-3333
+Larry Ellison	larry@sun.com	(444) 555-6666
+Steve Jobs	steve@apple.com	777-888-9999
+Grace Hopper	grace@hopper.com	800-221-5528
+h a	1@f.com	331-2539533	
+f a	1@1.com	(331) 253-9533	
+raps	raps@gmail.com	6466423998	
+rahul	rahul@gmail.com	6466425894	
+d k	1@b.com	3312539543	

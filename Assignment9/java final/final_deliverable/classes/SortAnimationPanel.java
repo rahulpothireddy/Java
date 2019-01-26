@@ -1,0 +1,162 @@
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+
+public class SortAnimationPanel extends JPanel implements Runnable{
+
+ //private static final long serialVersionUID = 2953854278931510571L;
+ private int array[];
+ private int PANEL_WIDTH = 0, PANEL_HEIGHT = 0;
+ private String arrayOrder = ""; //Asceding or Desceding
+ //which algorithm will be used for sorting
+ private SortingAlgorithm sortingAlgorithm = null;
+ 
+ public SortAnimationPanel(int width, int height) {
+  //set the size of the animation panel
+  setPreferredSize(new Dimension(width, height));
+ }
+ 
+ public void init(SortPanel sortPanel, int flag[], JButton stopButton, String algorithmName, String arrayOrder) {
+  this.arrayOrder = arrayOrder;
+  
+  //set the sorting algorithm based on selected algorithm text
+  if (algorithmName.equals("Bubble Sort")) {
+   sortingAlgorithm = new BubbleSort(this);
+  }
+  else if (algorithmName.equals("Insertion Sort")) {
+   sortingAlgorithm = new InsertionSort(this);
+  }
+  else {
+   sortingAlgorithm = new QuickSort(this);
+  }
+  
+  //initialize some crucial variables
+  sortingAlgorithm.setPanel(sortPanel);
+  sortingAlgorithm.setFlag(flag);
+  sortingAlgorithm.setStopButton(stopButton);
+ }
+ 
+ //change milliseconds variable based on selected text
+ public void setTimeSleep(String speedMode) {
+  int milliSecondsSleep = 100;
+
+  if (speedMode.equals("Fast")) {
+   milliSecondsSleep = 1;
+  }
+  else if (speedMode.equals("Medium")) {
+   milliSecondsSleep = 5;
+  }
+  else {
+   milliSecondsSleep = 10;
+  }
+  
+  if (sortingAlgorithm != null) {
+   sortingAlgorithm.setTimeSleep(milliSecondsSleep);
+  }
+ }
+ 
+ public void pause() {
+  if (sortingAlgorithm != null) {
+   sortingAlgorithm.pause();  }
+ }
+ 
+ public void stop() {
+  if (sortingAlgorithm != null) {
+   sortingAlgorithm.stop();
+  }
+ }
+ 
+ //create an initial array based on the selected text
+ public int[] createArray(String arrayOrder) {
+  if (arrayOrder.equals("Random")) {
+   return createRandomArray();
+  }
+  else if (arrayOrder.equals("Asceding")) {
+   return createAscedingArray();
+  }
+  else {
+   return createDescedingArray();
+  }
+ }
+ 
+ public int [] createRandomArray() {
+  int array[] = new int[PANEL_WIDTH];
+  Random random = new Random();
+  
+  for (int i = 0; i < PANEL_WIDTH; i++) {
+   array[i] = random.nextInt(PANEL_HEIGHT);
+  }
+  return array;
+ }
+ 
+ //create an asceding number array from 0 to min(PANEL_WIDTH, PANEL_HEIGHT)
+ public int[] createAscedingArray() {
+  int array[] = new int[PANEL_WIDTH];
+  
+  for (int i = 0; i < PANEL_WIDTH; i++) {
+   if (i > PANEL_HEIGHT) {
+    array[i] = PANEL_HEIGHT;
+   }
+   else {
+    array[i] = i;
+   }
+   
+  }
+  return array;
+ }
+ 
+ //create an desceding number array min(PANEL_WIDTH, PANEL_HEIGHT) to 0
+ public int[] createDescedingArray() {
+  int array[] = new int[PANEL_WIDTH];
+  
+  for (int i = PANEL_WIDTH-1; i >= 0; i--) {
+   if (i > PANEL_HEIGHT) {
+    array[PANEL_WIDTH-i-1] = PANEL_HEIGHT;
+   }
+   else {
+    array[PANEL_WIDTH-i-1] = i;
+   }
+  }
+  
+  return array;
+ }
+ 
+ //create a copy of the array
+ public void setArray(int array[]) {
+  this.array = new int[array.length];
+  for (int i = 0; i < array.length; i++) {
+   this.array[i] = array[i];
+  }
+  repaint();
+ }
+ 
+ /*
+  * This function draws current array. It is called via repaint()
+  * every time a swap is performed
+  */
+ public void paintComponent (Graphics g)
+ {
+     super.paintComponent (g);
+     PANEL_WIDTH = this.getWidth();
+     PANEL_HEIGHT = this.getHeight();
+     
+     if (array != null) {
+       for (int i = 0; i < PANEL_WIDTH; i++) {
+        g.drawRect(i, PANEL_HEIGHT-array[i], 1, array[i]);  
+        g.setColor(Color.BLUE);  
+        g.fillRect(i, PANEL_HEIGHT-array[i], 1, array[i]);  
+       }
+     }
+ }
+
+ //the function that each thread runs
+ public void run() {
+  sortingAlgorithm.initialize(array, arrayOrder);
+  sortingAlgorithm.sort();
+ }
+}

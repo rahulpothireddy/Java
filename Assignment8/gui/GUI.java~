@@ -1,0 +1,241 @@
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerListModel;
+import java.awt.GridBagLayout;
+import javax.swing.DefaultListModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Scanner;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.io.IOException;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import java.lang.String;
+import javax.swing.JFormattedTextField;
+
+
+public class GUI extends JFrame
+{
+    private final JLabel NormalMiles;
+    private final JLabel UpgradeCost;
+    private final JLabel SuperSaverDates;
+    private final JLabel MilesEntered;
+    private final JLabel SuperSaverMiles;
+    private final JLabel DepartureMonth;
+    private final JLabel RedeemMiles;
+    private final JButton RedeemMilesButton;
+    private final JList<String> destinationList;
+    private final JSpinner Spinnermonths;
+    private final JTextField MilesEnteredText;
+    private final JTextField SuperSaverMilesText;
+    private final JTextField UpgradeCostText;
+    private final JTextField RemainingMilesText;
+    private final JTextField NormalMilesText;
+    private final JTextField SuperSaverDatesText;
+    private final GridBagConstraints firstPanel;
+    private final GridBagConstraints secondPanel;
+    private final JPanel Panel1;
+    private final JPanel Panel2;
+    private final JTextArea EmptySpace;
+    private final DefaultListModel<String> defaultList;
+    private final TitledBorder destinationBorder;
+    private final TitledBorder redeemBorder;
+    int intmonth,milesremaining=0;
+    public GUI() throws IOException
+    {
+        super("Mile Redemption App"); 
+        String months[] = {"Jan", "Feb", "Mar","Apr","May","June","July","Aug","Sept","Oct","Nov", "Dec"};
+        String[] newarray;
+        NormalMiles = new JLabel("Normal miles");
+        MilesEntered = new JLabel("Enter your miles     ");
+        RedeemMiles = new JLabel("Your remaining miles");
+        SuperSaverMiles = new JLabel("Supersaver miles");
+        UpgradeCost = new JLabel("Upgrade cost");
+        SuperSaverDates = new JLabel("Supersaver Dates");
+        DepartureMonth = new JLabel("Select the month of departure");  
+        
+        Panel1 = new JPanel(new GridBagLayout());
+        Panel1.setBackground(new Color(143,188,143));
+        Panel1.setSize(340,300);
+        destinationBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Destinations");
+        destinationBorder.setTitleJustification(TitledBorder.CENTER);
+        Panel1.setBorder(destinationBorder);
+        Panel1.setLayout(new GridBagLayout());
+        firstPanel = new GridBagConstraints();
+        firstPanel.fill = GridBagConstraints.BOTH;
+        
+        Panel2 = new JPanel(new GridBagLayout());
+        Panel2.setBackground(new Color(147,112,219));
+        Panel2.setSize(340,300);
+        redeemBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Redeem Miles");
+        redeemBorder.setTitleJustification(TitledBorder.CENTER);        
+        Panel2.setBorder(redeemBorder);
+        Panel2.setLayout(new GridBagLayout());
+        secondPanel = new GridBagConstraints();
+        secondPanel.fill = GridBagConstraints.BOTH;
+        
+        defaultList = new DefaultListModel<>();
+        String name = JOptionPane.showInputDialog("Enter the File Name :");
+        Scanner fileScan = new Scanner(new File(name));
+        MileRedeemer mr = new MileRedeemer();
+        mr.readDestination(fileScan);
+        newarray = mr.getCityNames();
+        for(String x : newarray)
+        {
+          defaultList.addElement(x); 
+        }
+        EmptySpace = new JTextArea(12,40);
+        EmptySpace.setEditable(false);
+        RedeemMilesButton = new JButton("Redeem miles");
+        MilesEnteredText = new JTextField(24);
+        
+        RemainingMilesText = new JTextField(24);
+        RemainingMilesText.setEditable(false);
+        
+        NormalMilesText = new JTextField(18);
+        NormalMilesText.setEditable(false);
+        
+        SuperSaverMilesText = new JTextField(18);
+        SuperSaverMilesText.setEditable(false);
+        
+        UpgradeCostText = new JTextField(18);
+        UpgradeCostText.setEditable(false);
+        
+        SuperSaverDatesText = new JTextField(18);
+        SuperSaverDatesText.setEditable(false);
+        
+        Spinnermonths = new JSpinner(new SpinnerListModel(months));
+        JFormattedTextField spin=((JSpinner.DefaultEditor)Spinnermonths.getEditor()).getTextField();
+        spin.setEditable(false);
+        destinationList = new JList<>(defaultList);
+       
+        firstPanel.gridwidth = 3;
+        firstPanel.gridx = 0;
+        firstPanel.gridy = 0;
+        Panel1.add(destinationList,firstPanel);
+        
+        firstPanel.gridwidth = 1;
+        firstPanel.gridx = 0;
+        firstPanel.gridy = 1;
+        Panel1.add(NormalMiles,firstPanel);               
+        firstPanel.gridx = 0;
+        firstPanel.gridy = 2;
+        Panel1.add(SuperSaverMiles,firstPanel);
+        firstPanel.gridx = 0;
+        firstPanel.gridy = 3;
+        Panel1.add(UpgradeCost,firstPanel);
+        firstPanel.gridx = 0;
+        firstPanel.gridy = 4;
+        Panel1.add(SuperSaverDates,firstPanel);
+        
+        firstPanel.gridx = 1;
+        firstPanel.gridy = 1;
+        Panel1.add(NormalMilesText,firstPanel);
+        firstPanel.gridx = 1;
+        firstPanel.gridy = 2;
+        Panel1.add(SuperSaverMilesText,firstPanel);
+        firstPanel.gridx = 1;
+        firstPanel.gridy = 3;
+        Panel1.add(UpgradeCostText,firstPanel);
+        firstPanel.gridx = 1;
+        firstPanel.gridy = 4;
+        Panel1.add(SuperSaverDatesText,firstPanel);
+        
+        secondPanel.gridx = 0;
+        secondPanel.gridy = 0;
+        Panel2.add(MilesEntered,secondPanel);
+        secondPanel.gridx = 0;
+        secondPanel.gridy = 1;
+        Panel2.add(DepartureMonth,secondPanel);
+        secondPanel.gridx = 0; 
+        secondPanel.gridy = 2;
+        secondPanel.gridwidth = 8;
+        Panel2.add(RedeemMilesButton,secondPanel);
+        secondPanel.gridx = 0; 
+        secondPanel.gridy = 3;
+        Panel2.add(EmptySpace,secondPanel);
+        secondPanel.gridx = 0;
+        secondPanel.gridy = 4;
+        Panel2.add(RedeemMiles,secondPanel);
+        
+        secondPanel.gridx = 1;
+        secondPanel.gridy = 0;
+        Panel2.add(MilesEnteredText,secondPanel);
+        
+        secondPanel.gridx = 1;
+        secondPanel.gridy = 1;
+        Panel2.add(Spinnermonths,secondPanel);
+        secondPanel.gridx = 1;
+        secondPanel.gridy = 4;
+        Panel2.add(RemainingMilesText,secondPanel);
+              
+        RedeemMilesButton.addActionListener(new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent arg0){
+        JFrame f = new JFrame();
+        String miles1 = MilesEnteredText.getText();
+        int miles = Integer.valueOf(miles1);
+        for(int i=0;i<12;i++){
+          if(Spinnermonths.getValue() == months[i]){
+            intmonth = i+1;
+          }
+        }
+        String[] affordableCityListStyle = mr.redeemMiles(miles,intmonth);
+        int count =0;
+         String places ="";
+          for(String x : affordableCityListStyle){
+            if(x != null){
+              places = places + x + "\n" ; 
+              count++;
+            }
+          }
+          if(count == 0){
+            EmptySpace.setText("*** Your client has not accumulated enough Frequent Flyer Miles ***");
+          }
+          else{  
+        EmptySpace.setText(places);
+          }
+        milesremaining = mr.getRemainingMiles();
+        RemainingMilesText.setText(String.valueOf(milesremaining));
+      }
+        
+});
+        add(Panel1);
+        add(Panel2);     
+         Destination[] list = mr.getDestinationArray();
+         destinationList.addListSelectionListener(new ListSelectionListener() {
+         @Override   
+         public void valueChanged(ListSelectionEvent evt) 
+         {
+         if (evt.getValueIsAdjusting())
+         {
+         String cityName = destinationList.getSelectedValue();
+         for (Destination x : list){
+             
+             if (x.getDestinationCity().equals(cityName))
+             {
+                NormalMilesText.setText(Integer.toString(x.getNormalMiles()));
+                SuperSaverMilesText.setText(Integer.toString(x.getFrequentMiles()));
+                UpgradeCostText.setText(Integer.toString(x.getAdditionalMiles()));
+                String startMonth = months[x.getStartMonth()-1];
+                String endMonth = months[x.getEndMonth()-1];
+                SuperSaverDatesText.setText(startMonth + " - " + endMonth);
+             }
+         }
+         }
+         }
+        });
+    }
+}

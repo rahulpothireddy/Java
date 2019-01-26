@@ -1,0 +1,51 @@
+/************************************************************
+ *                                                          *
+ *  CSCI 502          Assignment 4           Fall 2018      *                                             
+ *                                                          *
+ *  Programmer: Ashton Dsouza (Z1828205)                    *  
+ *                                                          *
+ *  Date Due:   10/05/2018  11.59pm                         *                          
+ *                                                          *
+ *  Purpose:    To create a java console program            *
+ *              to be able to book flights                  *
+ *                                                          *
+ *                                                          * 
+ ***********************************************************/
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import java.util.Scanner;      // To take input
+import java.io.File;           // To handle files
+import java.io.IOException;    // To Throw IOException
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
+import javax.swing.DefaultListModel;
+
+
+/* Main class to run the console program based on methods in MileRedeemer and Destination */
+public class MileRedemptionApp extends JFrame
+{
+  public static void main(String[] args) throws IOException // Catch input/output exceptions
+  { 
+       GUI i = new GUI();
+       i.setVisible(true);
+       i.setSize(790,340);
+       i.setResizable(false);
+       i.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+       i.setLayout(new FlowLayout());
+  }
+}

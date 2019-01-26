@@ -1,0 +1,92 @@
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+
+//@SuppressWarnings("serial")
+public class SortSubPanel extends JPanel{
+ //this panel will draw the sorting algorithm process
+ private SortAnimationPanel sortAnimationPanel;
+ //create the combo box for algorithm selection
+ private String[] sortingAlgorithmStrings = {"Bubble Sort", "Insertion Sort", "Quick Sort"};
+ private JComboBox<String> sortingAlgorithms = new JComboBox<String>(sortingAlgorithmStrings);
+ //create the combo box for array order selection
+ private String[] orderStrings = {"Asceding", "Desceding"};
+ private JComboBox<String> orders = new JComboBox<String>(orderStrings);
+ //create the stop button
+ private JButton stopButton = new JButton("Stop");
+ 
+ /*
+  * This panel represents a subpanel that contains a sort animation panel
+  * and some control buttons. The main panel has two of them
+  */
+ public SortSubPanel(int width, int height) {
+  //initialize the created components
+  setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+  sortAnimationPanel = new SortAnimationPanel(width, height);
+  add(sortAnimationPanel);
+  sortingAlgorithms.setEnabled(false); //it's disabled at the beginning
+  sortingAlgorithms.setFocusable(false);
+  orders.setEnabled(false); //it's disabled at the beginning
+  orders.setFocusable(false);
+  stopButton.setEnabled(false); //it's disabled at the beginning
+  stopButton.setFocusable(false);
+  
+  stopButton.addActionListener(new ActionListener()
+     {
+       public void actionPerformed(ActionEvent e)
+       {
+        //stop current's panel process
+        stopButton.setEnabled(false);
+        sortAnimationPanel.stop();
+       }
+     });
+  
+  //create the bottom panel
+  JPanel bottomPanel = new JPanel();
+  bottomPanel.setLayout(new FlowLayout());
+  bottomPanel.add(sortingAlgorithms);
+  bottomPanel.add(orders);
+  bottomPanel.add(stopButton);
+  add(bottomPanel);
+ }
+ 
+ public int[] createArray(String arrayOrder) {
+  return sortAnimationPanel.createArray(arrayOrder);
+ }
+ 
+ public void setArray(int array[]) {
+  sortAnimationPanel.setArray(array);
+ }
+ 
+ public void pause() {
+  sortAnimationPanel.pause();
+ }
+ 
+ //enable or disable sorting algorithms combo box
+ public void setEnabledComboBox(boolean b) {
+  sortingAlgorithms.setEnabled(b);
+  orders.setEnabled(b);
+ }
+ 
+ public void setEnabledStopButton(boolean b) {
+  stopButton.setEnabled(b);
+ }
+ 
+ //create the animation panel thread that will animate the selected sorting algorithm
+ public Thread createThread(SortPanel sortPanel, int flag[], String speedMode) {
+  sortAnimationPanel.init(sortPanel, flag, stopButton, (String)sortingAlgorithms.getSelectedItem(), (String)orders.getSelectedItem());
+  setSpeed(speedMode);
+  return new Thread(sortAnimationPanel);
+ }
+ 
+ //change the speed mode (Fast, Medium, Slow)
+ public void setSpeed(String speedMode) {
+  sortAnimationPanel.setTimeSleep(speedMode);
+ }
+}
+

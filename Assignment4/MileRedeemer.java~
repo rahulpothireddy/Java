@@ -1,0 +1,104 @@
+import java.io.*;
+import java.util.*;
+
+
+class MileageComparator implements Comparator<Destination> 
+{
+   public int compare(Destination d1, Destination d2) 
+   {
+      return (d2.getNormalMiles() - d1.getNormalMiles());
+   }
+}
+
+public class MileRedeemer {
+ private Destination destination[];
+ private int remainingFrequentFlyerMiles;
+ private int numberOfDestinations;
+
+ public void readDestinations(Scanner fileScanner) throws IOException {
+  ArrayList<Destination> destinationList = new ArrayList<Destination>();
+  while(fileScanner.hasNext()) {
+   String input = fileScanner.nextLine();
+   String[] arrOfStr = input.split(";", 5);
+   String destinationCity = arrOfStr[0];
+   int normalMiles = Integer.parseInt(arrOfStr[1]);
+   int frequentFlyerMiles = Integer.parseInt(arrOfStr[2]);
+   int upgradeMiles = Integer.parseInt(arrOfStr[3]);
+   String[] month = arrOfStr[4].split("-", 2);
+   int startMonth = Integer.parseInt(month[0]);
+   int endMonth = Integer.parseInt(month[1]);
+   Destination newObj = new Destination(destinationCity, normalMiles, frequentFlyerMiles, upgradeMiles, startMonth, endMonth);
+   destinationList.add(newObj);  
+  }
+  this.numberOfDestinations = destinationList.size();
+  Collections.sort(destinationList,new MileageComparator());
+  
+  destination = (Destination[]) destinationList.toArray(new Destination[destinationList.size()]);
+  // remainingFrequentFlyerMiles = fileScanner.nextInt();
+ }
+
+ public String[] getCityNames() {
+  String name[] = new String[this.numberOfDestinations];
+  for(int i=0; i<this.numberOfDestinations; i++) {
+   name[i] = destination[i].getDestinationCity();
+  }
+  Arrays.sort(name);
+  return name;
+ }
+
+ public String[] redeemMiles(int miles, int month) {
+  this.remainingFrequentFlyerMiles = miles;
+  ArrayList<String> result = new ArrayList<String>();
+  ArrayList<String> cityNames = new ArrayList<String>();
+  int isAnyDestinationSelected = 0;
+  for(int i=0; i<this.numberOfDestinations; i++) {
+   if(destination[i].getStartMonth() == month || month == destination[i].getEndMonth()) {
+    if(destination[i].getFrequentFlyerMiles() <= this.getRemainingMiles()) {
+     isAnyDestinationSelected = 1;
+     result.add("* A trip to " + destination[i].getDestinationCity() + " in Economy");
+     cityNames.add(destination[i].getDestinationCity());
+     this.remainingFrequentFlyerMiles -= destination[i].getFrequentFlyerMiles();
+    }
+   }
+   else {
+    if(destination[i].getNormalMiles() <= this.getRemainingMiles()) {
+     isAnyDestinationSelected = 1;
+     result.add("* A trip to " + destination[i].getDestinationCity() + " in Economy");
+     cityNames.add(destination[i].getDestinationCity());
+     this.remainingFrequentFlyerMiles -= destination[i].getNormalMiles();
+    }
+   }
+  }
+
+  if(isAnyDestinationSelected == 0) {
+   String returnResult[] = new String[1];
+   returnResult[0] = "*** Your client has not accumulated enough Frequent Flyer Miles ***";
+   return returnResult;
+  }
+
+  int it = 0;
+  for(int i=0; i<this.numberOfDestinations; i++) {
+   if(this.destination[i].getDestinationCity() == cityNames.get(it)) {
+    if(this.destination[i].getUpgradeMiles() <= this.getRemainingMiles()) {
+     result.set(it, "* A trip to " + this.destination[i].getDestinationCity() + " in first class");
+     this.remainingFrequentFlyerMiles -= this.destination[i].getUpgradeMiles();
+    }
+    it++;
+    if(it >= cityNames.size()) {
+     break;
+    }
+   }
+  }
+
+  String returnResult[] = new String[result.size() + 1];
+  for(int i=0; i<result.size(); i++) {
+   returnResult[i] = result.get(i);
+  }
+  returnResult[result.size()] = "Your client's remaining Frequent Flyer Miles: " + this.getRemainingMiles();
+  return returnResult;
+ }
+
+ public int getRemainingMiles( ) {
+  return this.remainingFrequentFlyerMiles;
+ }
+}

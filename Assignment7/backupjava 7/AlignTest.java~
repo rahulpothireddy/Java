@@ -1,0 +1,12 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class AlignTest
+{
+  public static void main(String args[])
+   {
+     Align window = new Align();
+     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   }
+  
+}
